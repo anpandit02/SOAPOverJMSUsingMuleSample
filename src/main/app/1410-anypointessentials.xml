@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jdbc-ee="http://www.mulesoft.org/schema/mule/ee/jdbc" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/jdbc http://www.mulesoft.org/schema/mule/ee/jdbc/current/mule-jdbc-ee.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+    <ws:consumer-config name="Web_Service_Consumer_delta" wsdlLocation="http://airlines.cloudhub.io/delta?wsdl" service="TicketServiceService" port="TicketServicePort" serviceAddress="http://airlines.cloudhub.io/delta" doc:name="Web Service Consumer"/>
+    <db:mysql-config name="AmericanAirlineDatabase" host="training.cpk4jjb2mzwd.us-west-2.rds.amazonaws.com" port="3306" user="ReaderAccount" password="learnmule" database="training" doc:name="MySQL Configuration"/>
+    <data-mapper:config name="List_Map__To_Pojo" transformationGraphPath="list_map__to_pojo.grf" doc:name="List_Map__To_Pojo"/>
+    <data-mapper:config name="Pojo_To_Xml_findFlight_" transformationGraphPath="pojo_to_xml_findflight_.grf" doc:name="Pojo_To_Xml_findFlight_"/>
+    <data-mapper:config name="Xml_findFlightResponse__To_Pojo" transformationGraphPath="xml_findflightresponse__to_pojo.grf" doc:name="Xml_findFlightResponse__To_Pojo"/>
+    <data-mapper:config name="JSON_To_Pojo" transformationGraphPath="json_to_pojo.grf" doc:name="JSON_To_Pojo"/>
+    <flow name="FlightRequestFlow" doc:name="FlightRequestFlow">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="flight" doc:name="HTTP"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <choice doc:name="Choice">
+            <when expression="#[message.InboundProperties['http.method']=='POST']">
+                <logger message="ChoiceBeforeCanonicalConversion" level="INFO" doc:name="Logger"/>
+                <json:json-to-object-transformer returnClass="com.mulesoft.training.FlightRequest" doc:name="JSON to Object"/>
+                <vm:outbound-endpoint exchange-pattern="request-response" path="FlightMulticast" doc:name="VM-MultiCastFlow"/>
+                <logger message="ChoiceMultiCatBegin" level="INFO" doc:name="Logger"/>
+                <json:object-to-json-transformer doc:name="Object to JSON"/>
+                <logger message="ChoiceEndJSONCOnv" level="INFO" doc:name="Logger"/>
+            </when>
+            <when expression="#[message.InboundProperties['http.method']=='GET']">
+                <http:outbound-endpoint exchange-pattern="request-response" host="localhost" port="8085" path="flight" method="GET" doc:name="HTTPGetForm"/>
+            </when>
+            <otherwise>
+                <logger level="INFO" doc:name="Logger"/>
+            </otherwise>
+        </choice>
+    </flow>
+    <flow name="MulticastFlow" doc:name="MulticastFlow">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="FlightMulticast" doc:name="VM"/>
+        <scatter-gather doc:name="Scatter-Gather">
+            <vm:outbound-endpoint exchange-pattern="request-response" path="united" doc:name="VM-United"/>
+            <vm:outbound-endpoint exchange-pattern="request-response" path="delta" doc:name="VM_Delta"/>
+            <vm:outbound-endpoint exchange-pattern="request-response" path="american" doc:name="VM_American"/>
+        </scatter-gather>
+        <combine-collections-transformer doc:name="Combine Collections"/>
+        <logger message="MultiCastEnd" level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="UnitedFlow" doc:name="UnitedFlow">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="united" doc:name="VM_united"/>
+        <logger message="STARTUNITED" level="INFO" doc:name="STARTUNITED"/>
+        <set-payload value="#[message.payload.getDestination()]" doc:name="Set Payload"/>
+        <http:outbound-endpoint exchange-pattern="request-response" host="airlines.cloudhub.io" port="80" path="united/flight/#[message.payload]" method="GET" doc:name="HTTP"/>
+        <data-mapper:transform config-ref="JSON_To_Pojo" doc:name="JSON To Pojo"/>
+        <logger level="INFO" doc:name="Logger" message="UnitedFlowEnd"/>
+    </flow>
+    <flow name="DeltaFlow" doc:name="DeltaFlow">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="delta" doc:name="VM"/>
+        <logger message="STARTDELTA" level="INFO" doc:name="Logger"/>
+        <data-mapper:transform config-ref="Pojo_To_Xml_findFlight_" doc:name="Pojo To Xml&lt;findFlight&gt;"/>
+        <ws:consumer config-ref="Web_Service_Consumer_delta" operation="findFlight" doc:name="Web Service Consumer"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <data-mapper:transform config-ref="Xml_findFlightResponse__To_Pojo" doc:name="Xml&lt;findFlightResponse&gt; To Pojo"/>
+        <logger message="DeltaFlowEND" level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="AmericanFlow" doc:name="AmericanFlow">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="american" doc:name="VM"/>
+        <logger message="STARTAMERICAN" level="INFO" doc:name="Logger"/>
+        <db:select config-ref="AmericanAirlineDatabase" doc:name="Database">
+            <db:parameterized-query><![CDATA[select * from currentFlights where destination =#[message.payload.getDestination()]]]></db:parameterized-query>
+        </db:select>
+        <data-mapper:transform config-ref="List_Map__To_Pojo" doc:name="List&lt;Map&gt; To Pojo"/>
+        <logger message="AmericanFlowEnd" level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="formflowFlow" doc:name="formflowFlow">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8085" path="flight" doc:name="HTTP"/>
+        <parse-template location="src/main/resources/FlightFinder.html" doc:name="Parse Template"/>
+        <message-properties-transformer doc:name="Message Properties">
+            <add-message-property key="Content-Type" value="text/html"/>
+        </message-properties-transformer>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+
+</mule>

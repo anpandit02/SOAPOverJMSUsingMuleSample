@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="anirudhpandit" created="Wed Aug 13 20:47:58 PDT 2014" description="Xml&lt;findFlightResponse&gt; To Pojo" guiVersion="3.4.4.P" id="1407997950469" licenseCode="Unlicensed" licenseType="Unknown" modified="Wed Aug 13 20:47:58 PDT 2014" modifiedBy="anirudhpandit" name="Xml_findFlightResponse__To_Pojo" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __filteredMetadata="false" __index="0" __referenceCounter="1" __schemaType="{http://training.mulesoft.com/}findFlightResponse" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse" _dataStructure="OBJECT" _id="__id" _type="Input" id="5907d2bb-85a3-436d-8889-cc8a0677389c">
+<Record fieldDelimiter="," name="findFlightResponse" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="2" __sourcePath="{}/list" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _type="Output" id="6904ddde-314e-438c-bcb1-d43681a49947">
+<Record fieldDelimiter="," name="list" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/list/airlineName" containerType="SINGLE" label="airlineName" name="airlineName" type="string"/>
+<Field __index="1" __sourcePath="{}/list/availableSeats" containerType="SINGLE" label="availableSeats" name="availableSeats" type="integer"/>
+<Field __index="2" __sourcePath="{}/list/departuredate" containerType="SINGLE" label="departuredate" name="departuredate" type="string"/>
+<Field __index="3" __sourcePath="{}/list/destination" containerType="SINGLE" label="destination" name="destination" type="string"/>
+<Field __index="4" __sourcePath="{}/list/flightCode" containerType="SINGLE" label="flightCode" name="flightCode" type="string"/>
+<Field __index="5" __sourcePath="{}/list/origination" containerType="SINGLE" label="origination" name="origination" type="string"/>
+<Field __index="6" __sourcePath="{}/list/planeType" containerType="SINGLE" label="planeType" name="planeType" type="string"/>
+<Field __index="7" __sourcePath="{}/list/price" containerType="SINGLE" label="price" name="price" type="number"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __schemaType="{http://training.mulesoft.com/}flight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse/return" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="5907d2bb-85a3-436d-8889-cc8a0677389c" _parent_id="__parent_id" _type="Input" id="de4b088d-5f87-4d7d-be4f-388d4fde7026">
+<Record fieldDelimiter="," name="return" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __schemaType="{http://training.mulesoft.com/}flight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse/return/airlineName" containerType="SINGLE" label="airlineName" name="airlineName" type="string"/>
+<Field __index="1" __schemaType="{http://training.mulesoft.com/}flight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse/return/code" containerType="SINGLE" label="code" name="code" type="string"/>
+<Field __cdata="false" __index="2" __schemaType="{http://training.mulesoft.com/}flight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse/return/departureDate" containerType="SINGLE" label="departureDate" name="departureDate" type="string"/>
+<Field __index="3" __schemaType="{http://training.mulesoft.com/}flight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse/return/destination" containerType="SINGLE" label="destination" name="destination" type="string"/>
+<Field __index="4" __schemaType="{http://training.mulesoft.com/}flight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse/return/emptySeats" containerType="SINGLE" label="emptySeats" name="emptySeats" type="integer"/>
+<Field __index="5" __schemaType="{http://training.mulesoft.com/}flight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse/return/origin" containerType="SINGLE" label="origin" name="origin" type="string"/>
+<Field __index="6" __schemaType="{http://training.mulesoft.com/}flight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse/return/planeType" containerType="SINGLE" label="planeType" name="planeType" type="string"/>
+<Field __index="7" __schemaType="{http://training.mulesoft.com/}flight" __sourcePath="{http://training.mulesoft.com/=ns0}/ns0:findFlightResponse/return/price" containerType="SINGLE" label="price" name="price" type="number"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node cacheInMemory="true" enabled="enabled" fileURL="dict:outputPayload" guiName="Pojo WRITER" guiX="900" guiY="20" id="BEAN_WRITER0" type="BEAN_WRITER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<clover:collection clover:name="list" xmlns:clover="http://www.cloveretl.com/ns/xmlmapping">
+  <item clover:inPort="0">
+    <airlineName>$0.airlineName</airlineName>
+    <availableSeats>$0.availableSeats</availableSeats>
+    <departuredate>$0.departuredate</departuredate>
+    <destination>$0.destination</destination>
+    <flightCode>$0.flightCode</flightCode>
+    <origination>$0.origination</origination>
+    <planeType>$0.planeType</planeType>
+    <price>$0.price</price>
+  </item>
+  <item clover:inPort="1">
+    <airlineName>$1.airlineName</airlineName>
+    <availableSeats>$1.availableSeats</availableSeats>
+    <departuredate>$1.departuredate</departuredate>
+    <destination>$1.destination</destination>
+    <flightCode>$1.flightCode</flightCode>
+    <origination>$1.origination</origination>
+    <planeType>$1.planeType</planeType>
+    <price>$1.price</price>
+  </item>
+</clover:collection>]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <schema-collection>
+    <typed-object-ref type-ref="com.mulesoft.training.Flight"/>
+  </schema-collection>
+  <typed-object type="int"/>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="double"/>
+  <typed-object type="com.mulesoft.training.Flight">
+    <typed-object-ref name="airlineName" type-ref="java.lang.String"/>
+    <typed-object-ref name="availableSeats" type-ref="int"/>
+    <typed-object-ref name="departuredate" type-ref="java.lang.String"/>
+    <typed-object-ref name="destination" type-ref="java.lang.String"/>
+    <typed-object-ref name="flightCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="origination" type-ref="java.lang.String"/>
+    <typed-object-ref name="planeType" type-ref="java.lang.String"/>
+    <typed-object-ref name="price" type-ref="double"/>
+  </typed-object>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'ns0:findFlightResponse' -&gt; 'list'" guiX="460" guiY="20" id="FOREACH_NS0_FIND_FLIGHT_RESPONSE_LIST" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'return' -&gt; 'list'" guiX="460" guiY="120" id="FOREACH_RETURN_LIST" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+output.airlineName = input.airlineName;
+output.departuredate = input.departureDate;
+output.destination = input.destination;
+output.planeType = input.planeType;
+output.price = input.price;
+output.flightCode = input.code;
+output.origination = input.origin;
+output.availableSeats = input.emptySeats;]]></attr>
+</Node>
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="XML READER" guiX="20" guiY="20" id="XML_READER0" type="XML_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context namespacePaths="ns0=&quot;http://training.mulesoft.com/&quot;" outPort="0" sequenceField="__id" xpath="/ns0:findFlightResponse">
+  <Context generatedKey="__parent_id" outPort="1" parentKey="__id" sequenceField="__id" xpath="return">
+    <Mapping cloverField="airlineName" trim="true" xpath="airlineName"/>
+    <Mapping cloverField="code" trim="true" xpath="code"/>
+    <Mapping cloverField="departureDate" trim="true" xpath="departureDate"/>
+    <Mapping cloverField="destination" trim="true" xpath="destination"/>
+    <Mapping cloverField="emptySeats" trim="true" xpath="emptySeats"/>
+    <Mapping cloverField="origin" trim="true" xpath="origin"/>
+    <Mapping cloverField="planeType" trim="true" xpath="planeType"/>
+    <Mapping cloverField="price" trim="true" xpath="price"/>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[XML]]></attr>
+<attr name="__metadata"><![CDATA[true]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="FOREACH_NS0_FIND_FLIGHT_RESPONSE_LIST:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="6904ddde-314e-438c-bcb1-d43681a49947" outPort="Port 0 (out)" toNode="BEAN_WRITER0:0"/>
+<Edge debugMode="true" fromNode="FOREACH_RETURN_LIST:0" guiBendpoints="" id="Edge3" inPort="Port 1 (in)" metadata="6904ddde-314e-438c-bcb1-d43681a49947" outPort="Port 0 (out)" toNode="BEAN_WRITER0:1"/>
+<Edge debugMode="true" fromNode="XML_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="5907d2bb-85a3-436d-8889-cc8a0677389c" outPort="Port 0 (out)" toNode="FOREACH_NS0_FIND_FLIGHT_RESPONSE_LIST:0"/>
+<Edge debugMode="true" fromNode="XML_READER0:1" guiBendpoints="" id="Edge2" inPort="Port 0 (in)" metadata="de4b088d-5f87-4d7d-be4f-388d4fde7026" outPort="Port 1 (out)" toNode="FOREACH_RETURN_LIST:0"/>
+</Phase>
+</Graph>
